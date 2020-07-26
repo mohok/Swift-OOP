@@ -262,6 +262,14 @@
 
 테스트를 먼저 작성하고 테스트를 통과하는 구체적인 코드를 추가하면서 애플리케이션을 완성해나가는 방식이다. 테스트는 테스트-주도 개발을 통해 얻을 수 있는 별도의 보너스 같은 것이며, 실제 목적은 구체적인 코드를 작성해나가면서 역할, 책임, 협력을 식별하고 식별된 역할, 책임, 협력이 적합한지를 피드백받는 것이다.
 
+
+
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+
+
 # 객체지향에 대한 오해
 
 - 클래스를 만들어 사용하는 것이 OOP다.
@@ -701,3 +709,4 @@ extension EditProfileViewController: UINavigationControllerDelegate,
 
 [객체지향의 사실과 오해](https://book.naver.com/bookdb/book_detail.nhn?bid=9145968)
 [베어코드](https://www.youtube.com/channel/UCEuyt4RB4mlMfADQMz-d2DQ)
+
