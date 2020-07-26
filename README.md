@@ -262,7 +262,442 @@
 
 테스트를 먼저 작성하고 테스트를 통과하는 구체적인 코드를 추가하면서 애플리케이션을 완성해나가는 방식이다. 테스트는 테스트-주도 개발을 통해 얻을 수 있는 별도의 보너스 같은 것이며, 실제 목적은 구체적인 코드를 작성해나가면서 역할, 책임, 협력을 식별하고 식별된 역할, 책임, 협력이 적합한지를 피드백받는 것이다.
 
+# 객체지향에 대한 오해
+
+- 클래스를 만들어 사용하는 것이 OOP다.
+- OOP에서 이야기하는 많은 개념 중 어떤 것이 가장 OOP의 핵심 가치는 상속이다.
+- 잘 만들어진 Framework들은 우연히 그런 모양으로 만들어진 것이다.
+- 많은 Design pattern들을 다 외우는 것이 좋다.
+
+## 상속, Inheritance
+
+- 상속이 OOP의 가장 중요한 개념인가?
+- 상속은 슈퍼 클래스의 기능을 확장하기 위해서 사용하는 것인가?
+- 슈퍼 클래스의 기능을 재활용하기 위해 상속을 사용해야 하는가?
+
+→ 대부분의 경우 상속은 좋은 선택지가 아니다. 상속을 하면 매우 강한 커플링이 일어난다. 그리고 한 번 상속으로 처리한 코드는 바꾸는데 매우 큰 비용이 든다. 상속으로 구현한 후에 기능을 추가하면, 불필요한 상속이 일어날 수 있으며, 슈퍼 클래스와 서브 클래스 모두의 동작을 확인하면서 작성해야 하기 때문에 단순한 작업이라 하더라도 쉽지 않다.
+
+→ **OOP는 상속보다 추상화에 초점이 맞춰져 있다.** 상속은 기능의 확장으로 볼 것이 아니라 추상화의 구체화 도구로 봐야 한다. UIVew를 상속 받고 확장해서 새로운 커스텀 View를 만든다는 접근보다는, 추상적으로 'View' 자체로 생각하고 상속받아서 커스텀 View로 구체화한다는 접근법이 좋은 코드를 만드는 데 도움이 된다. 확장이냐 추상화냐의 차이가 크게 생각되지 않을 수 있고, 실제로 구현되는 코드는 비슷하게 되더라도 결과물은 확연히 달라진다.
+
+## OOP를 공부하기 전에 알아두면 좋은 것
+
+- 잘 설계된 Object-Oriented Code는 공통점을 가지고 있다.
+- 모든 Use case(Design pattern)를 외우기보다는 유도해내는 방법을 알아야 한다.
+- Object-Oriented Design을 잘 하기 위한 핵심적인 개념 5가지 → SOLID
+
+# 소프트웨어 공학에서 말하는 설계란 무엇인가?
+
+- Jack W. Reeves: 소스코드가 설계다!
+
+소프트웨어 공학의 결과물은?
+
+- 실행하는 바이너리 코드가 결과물이다. 소스코드는 document이다.
+
+집을 짓는 전략과 소프트웨어를 만드는 전략은 달라야 한다. 집은 설게 비용이 저렴하지만, 소프트웨어는 설계 자체가 소스 코드 작성이 수반되는 활동이기 때문에 비싼 비용(인!건!비!)이 들기 때문이다. 
+
+사용자의 요구를 맞추기 위해 릴리즈 주기가 짧아지고 있다.
+
+# 잘못된 설계에서 나타나는 징후들
+
+테스트 코드 작성이 어렵게 느껴진다.
+
+## Rigidity
+
+- 견고한 의존성으로 인해 변경하기 어려워지는 상황
+
+### 원인
+
+- 많은 시간이 소요되는 테스트와 빌드
+    - 테스트, 빌드의 자동화가 되어있지 않은 경우 자주 빌드하는 데 부담이 생긴다.
+- 전체 리빌드를 유발하는 아주 작은 변화
+    - 의존성 관리를 잘못해서 약간의 변화가 있었는데 전체를 리빌드해야 하는 경우 자주 빌드하기 힘들다.
+
+### 해결
+
+- 테스트와 리빌드 시간 줄이기
+    - 자주 리빌드할 수 있어야 Rigidity가 줄어들고, 수정이 쉬워진다.
+    - → SOLID 원칙을 지키면 된다.
+
+## Fragility
+
+- 한 모듈의 수정이 다른 모듈에 영향을 미치는 상황
+- 예를 들어 자동차를 소프트웨어로 제어할 때, 라디오 버튼을 수정하는데 창문이 영향을 받는 경우
+
+### 해결
+
+- 모듈간의 의존성 제거
+
+## Immobility
+
+- 모듈이 쉽게 추출 되지 않고 재사용 하지 못하는 상황
+- 예를 들어 로그인 모듈이 특정 DB의 스키마를 사용하고, 특정 UI skin을 사용하는 경우에 이 로그인 모듈은 다른 시스템에서 재사용 하지 못한다.
+
+### 해결
+
+- DB, UI, Framework등과 결합도를 낮추는 것
+
+## Viscosity
+
+- 빌드/테스트 같은 필수 오퍼레이션이 오래 걸려 수행이 어렵다면 그 시스템은 역겨운 것이다.
+    - 여러 레이어를 가로질러 의존성을 갖는 것은 역겁다. 레이어드 아키텍쳐를 이야기할 때 '상위 레이어는 하위 레이어를 호출할 수 있다'는 런타임의 의존성 방향을 이야기하는 것이지 코드의 의존성 방향을 이야기하는 것이 아니다.
+
+- 항상 같은 역겨움의 원인: Irresponsible tolerance(무책임한 용인)
+    - 개발자가 나빠질 것이라는 것을 알면서도 아무것도 하지 않은 것(해야 할 일이 많기 때문에).
+- 강하게 연결된 시스템은 테스트, 빌드, 수정을 어렵게 한다.
+
+### 해결
+
+- Dependency는 유지한 채 Decoupling하는 것
+
+## Needless Complexity
+
+- 요구사항 변경이 너무 급변하는 상황. 미래를 예측할 수 없기 때문에 미리 새로운 요구사항을 고려하면 불필요한 복잡성이 생긴다. 이러한 복잡성은 대부분 강한 커플링을 유발한다.
+- 실제로 그 요구사항이 생기지 않으면 불필요한 코드일 뿐이며, 요구사항이 생기더라도 미리 생각한 방법이 최적의 방법이 아닐 수 있다.
+
+### 해결
+
+- 현재 요구 사항에 집중.
+- 필요한 요구 사항을 쉽게 반영하도록 코딩. 그러려면 테스트가 용이해야 한다. 테스트를 잘 만들자.
+
+## What is OO ?
+
+- o.f(x) ≠ f(o,x)
+    - 객체지향에서는 왼쪽[ o.f(x) ]과 같은 모습이 나와야 한다.
+- Dynamic polymorphism
+    - 객체가 메세지를 전달했는데 메세지를 수신하는 놈이 누군지, 어떻게 동작할지 모름
+    - 다만, 약속된 인터페이스에 맞춰서 동작함.
+- Dependency Inversion이 OO의 정수이다.
+- **객체지향의 핵심**
+    - Inversion of Control을 통해 상위 레벨의 모듈을 하위 레벨의 모듈로부터 보호하는 것
+- **객체지향 디자인**
+    - Dependency를 잘 관리하는 것이다.
+        - SRP, OCP, LSP, ISP, DIP
+    - Key dependencies를 역전시켜서 상위 레벨 policies랑 하위 레벨 detail을 격리시키는 것이 중요하다.
+- 객체지향의 메커니즘
+    - 실세계를 똑같이 모델링하는 것
+    - Inheritance, Encapsulation, Polymorphism
+
+
+# SRP(Single Responsibility Principle)
+하나의 클래스는 하나의(단일) 책임을 가져야 한다.
+
+특정 기능을 변경하기 위해 여러 클래스의 코드를 수정해야 한다면 설계가 잘못된 것이다. 코드가 응집력 없이 여기저기 떨어져 있기 때문이다. 반대로, 특정 기능을 변경하기 위해 수정했는데 클래스코드의 대부분이 수정되지 않았다면 역시 SRP 위반 사례로 볼 수 있다. 지금은 단일 기능이라고 생각되더라도 특정 부분이 추후에 변경될 가능성이 높다고 판단된다면 그 부분을 따로 분리하는 것이 SRP를 지킬 수 있다.
+
+## 단일
+
+어느 정도가 단일의 범위인가? 극단적으로 크게 생각하면 앱 전체가 한 가지 기능을 갖고 있다고 말할 수 있다. 반대로, 작게 생각하면 두 개의 숫자를 더하는 정도의 기능을 일컫을 수 있다. 이처럼 단일의 범위는 매우 상대적인 부분이기 때문에 되도록 작은 범위로 생각하는 것이 좋으며, "책임"과 함께 고려해서 적당한 선을 선택하는 것이 좋다.
+
+## 책임
+
+책임은 `변경을 위한 이유`다.
+
+
+## SRP를 준수한 클래스의 특징
+
+- 높은 응집도
+- 낮은 결합도
+- 특정 기능의 변경을 위한 수정이 한곳에 집중되어 있다.
+
+## SRP를 준수하는 클래스의 응용
+
+### 디자인 패턴들
+
+- Abstract Factory
+- Bridge:
+- State
+- Strategy
+- Command
+
+SOLID의 다른 영역들(OCP, LSP, ISP, DIP)은 SPR를 근간으로 한다.
+
+## iOS에서의 대표적인 SRP 위반 사례
+
+### ViewController
+
+- Massive ViewController
+
+### ViewController가 SRP를 위반하고 있다고 판단하는 근거는?
+
+- Apple Doc. UIViewController: Provides the infrastructure for **managing the views** of your UIKit app.
+
+### 일반적인 ViewController에서 "managing views"에 해당되지 않는 부분은?
+
+- 데이터 패치 → SRP 위반
+- 패치된 데이터 관리 → SRP 위반
+- 뷰의 레이아웃이 변하는 코드가 있는 경우 → SRP 위반
+
+## MVC 돌아보기
+
+### 현재 MVC의 문제점
+
+원래 Contoller는 View와 Model을 잇는 존재지만 ViewController는 View를 관리하면서 Model을 처리하는 로직까지 추가되고 있다.
+
+태초의 Cocoa 프레임워크에서는 ViewController가 없었다. iOS가 등장하면서 메모리 관리나 View의 라이프사이클을 관리하기 위해 ViewController를 만들게 되었다. 사실, 이름을 Controller로 명명한 것이 문제가 아니었을까. ViewController가 아니고 ViewManager였다면, 그래서 별도의 Controller를 가질 수 있었다면 View의 라이프사이클은 ViewManager가 하고, Controller는 본연의 임무인 View와 Model의 바인딩만 처리시켰다면 상황은 나아졌을 것이다.
+
+### MVP, MVVM, VIPER 모두 공통적으로 이 문제를 해결하기 위해 제시됨
+
+- **ViewController를 View로 취급**
+
+## SRP 적용하기
+
+특정한 디자인 패턴의 선택보다 SRP의 개념을 이해하고, 코드를 적절히 잘 분리하는 일이 더 중요하다.
+
+### ViewController
+
+View를 관리하는 부분을 제외하고 모두 별도의 class로 분리할 수 있다.
+
+- Presenter: Model을 다루고, 어떻게 표현될지 결정
+- Router: View들의 전환 관리
+- Layout Manager: View의 Layout을 전담해서 관리
+
+## 정리
+
+- 패턴들을 외우기보다 왜 그런 패턴이 나왔는지 이해하는 것이 중요하다.
+- 10-200룰(함수 10줄, 클래스 200줄 이내로 코드를 작성하는 규칙)은 SRP를 연습하는데 효과적인 도구이다.
+- 단일과 책임에 대해서 고민하면서 코드를 분리하는 습관을 갖자.
+
+## 예제 코드
+
+[Enable/disable or switch on/off a service, Bob Godwin](https://medium.com/@bobgodwinx/solid-principles-part-1-f3d11b3159f0)
+
+```swift
+protocol SwitchOn {
+    func on()
+}
+
+protocol SwitchOff {
+    func off()
+}
+
+class Switch: SwitchOn, SwitchOff {
+    private var state: Bool = false
+
+    func on() {
+        state = true
+    }
+
+    func off() {
+        state = false
+    }
+
+    var description: String {
+        return state ? "Switched On" : "Switched Off"
+    }
+}
+
+//
+//
+//
+let aSwitch = Switch() /// Represents your model
+aSwitch.off()
+aSwitch.on()
+
+```
+
+```swift
+/// Executes a function
+protocol Executable {
+    func execute()
+}
+
+/// Conforms to `Executable`
+class TurnOn: Executable {
+
+    private let  aSwitch: SwitchOn
+
+    init(aSwitch: SwitchOn) {
+        self.aSwitch = aSwitch
+    }
+
+    func execute() {
+        //Single Responsibility
+        self.aSwitch.on()
+    }
+}
+/// Conforms to `Executable`
+class TurnOff: Executable {
+    private let  aSwitch: SwitchOff
+
+    init(aSwitch: SwitchOff) {
+        self.aSwitch = aSwitch
+    }
+
+    func execute() {
+        //Single Responsibility
+        self.aSwitch.off()
+    }
+}
+```
+
+[TwitterManager, Bruno Faganello](https://medium.com/code-with-coffee/solid-swift-single-1e7e2fcff5c9)
+
+
+```swift
+import Foundation
+
+class TwitterManager{
+    fileprivate func request() -> Data{
+        return Data()
+    }
+    
+    fileprivate func convertJsonToModel(with data: Data) -> [AnyObject]{
+        return [AnyObject]()
+    }
+    
+    fileprivate func saveInCoreData(with models: [AnyObject]){
+    }
+    
+    public func create(){
+        let data = request()
+        let model = convertJsonToModel(with: data)
+        saveInCoreData(with: model)
+    }
+}
+
+```
+
+**문제**
+
+너무 많은 책임: request, convert to JSON, save, create ...
+
+**해결**
+
+각 책임을 클래스로 나눈다.
+
+```swift
+import Foundation
+
+class RequestManager {
+    func request() -> Data{
+        return Data()
+    }
+}
+
+class ParseManager{
+    func convertJsonToModel(with data: Data) -> [AnyObject]{
+        return [AnyObject]()
+    }
+}
+
+class CoreDataManager{
+    fileprivate func saveInCoreData(with models: [AnyObject]){
+    }
+}
+
+class TwitterManager{
+    fileprivate let requestManager:RequestManager
+    fileprivate let parse:ParseManager
+    fileprivate let coreManager:CoreDataManager
+    
+    init(
+			requestManager:RequestManager, 
+			parseManager:ParseManager, 
+			coreManager:CoreDataManager
+		){
+        self.requestManager = requestManager
+        self.parse = parseManager
+        self.coreManager = coreManager
+    }
+    
+    func create(){
+        let data = self.requestManager.request()
+        let objects = self.parse.convertJsonToModel(with: data)
+        coreManager.saveInCoreData(with: objects)
+    }
+}
+```
+
+[View controller for editing your profile picture, Roni Leshes](https://medium.com/the-aesthetic-programmer/ios-solid-principles-pt-1-srp-9c231d121a12)
+
+```swift
+import UIKit
+import Photos
+
+class EditProfileViewController: UIViewController {
+
+    @IBOutlet weak var profilePicImageView: UIImageView!
+    lazy var imagePicker = UIImagePickerController()
+
+    private static let documentDirectoryPath =
+        NSSearchPathForDirectoriesInDomains(
+            .documentDirectory,
+            .userDomainMask,
+            true
+            )[0] as NSString
+    private static let imageName = "ProfilePic.jpg"
+    private let imgPathURL = URL(
+        fileURLWithPath: documentDirectoryPath.appendingPathComponent(imageName))
+    
+    private let defaultProfilePic = UIImage(named: "avatar")!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.setProfilePicIfAvailable()
+    }
+
+    
+    private func setProfilePicIfAvailable(){
+        do{
+            let imgData = try Data(contentsOf: imgPathURL)
+            if let image = UIImage(data: imgData){
+                self.profilePicImageView.image = image
+                print("Loading the profile pic finished successfully")
+            }else{
+                self.profilePicImageView.image = self.defaultProfilePic
+            }
+        }catch{
+            self.profilePicImageView.image = self.defaultProfilePic
+            print("Loading the profile pic failed with error:\(error.localizedDescription)")
+        }
+    }
+    
+    
+    
+    @IBAction func editImagePressed(_ sender: Any) {
+        PHPhotoLibrary.requestAuthorization({ [unowned imagePicker] (status) in
+            switch status{
+            case .authorized:
+                if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
+                    imagePicker.delegate = self
+                    imagePicker.sourceType = .photoLibrary;
+                    imagePicker.allowsEditing = false
+                    self.present(imagePicker, animated: true, completion: nil)
+                }
+            default :
+                return
+            }
+        })
+    }
+}
+extension EditProfileViewController: UINavigationControllerDelegate,
+    UIImagePickerControllerDelegate
+{
+    @objc func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
+            self.dismiss(animated: true, completion:nil)
+            self.profilePicImageView.image = image
+            
+            do{
+                try image.jpegData(compressionQuality: 1.0)?
+                    .write(to: imgPathURL, options: .atomic)
+                print("Saving the profile pic finished successfully")
+            }catch let error{
+                print("Saving the profile pic failed with error:\(error.localizedDescription)")
+            }
+        }
+    }
+    
+    @objc func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+```
+
+
+
 # 참고
 
 [객체지향의 사실과 오해](https://book.naver.com/bookdb/book_detail.nhn?bid=9145968)
-
+[베어코드](https://www.youtube.com/channel/UCEuyt4RB4mlMfADQMz-d2DQ)
